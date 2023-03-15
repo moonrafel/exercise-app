@@ -1,21 +1,24 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import PokeComp from '../components/PokeComp'
-import { searchString } from '../features/pokemon/pokemonSlice'
+import { fetchPokemon } from '../features/pokemon/pokemonSlice'
 
 
 function Pokemon() {
 
+    const dispatch = useDispatch()
+    const [searchString, setSearchString] = useState("")
     const pokemonObj = useSelector((state) => state.pokemon.pokemonList)
 
-    const renderPokemon = () => {
-        return pokemonObj.map((pokemon) => {
-            return <PokeComp pokemon={pokemon} />
-        })
-    }
+    // const renderPokemon = () => {
+    //     return pokemonObj.map((pokemon) => {
+    //         return <PokeComp pokemon={pokemon} />
+    //     })
+    // }
 
     const inputHandler = (e) => {
-        searchString(e.target.value)
+        setSearchString(e.target.value)
     }
 
     return (
@@ -31,11 +34,14 @@ function Pokemon() {
                 />
                 <button
                     class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                    onClick={() => { inputHandler() }}
+                    onClick={() => { dispatch(fetchPokemon(searchString)) }}
                 >SEARCH</button>
             </div>
             <div>
-                {renderPokemon()}
+                {pokemonObj.name ?
+                    <PokeComp pokemon={pokemonObj} />
+                    : null
+                }
             </div>
         </div>
     )
